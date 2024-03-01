@@ -53,7 +53,7 @@ public class ReusablePoolTest {
 	 * En este test se comprueba que el método acquireReusable() devuelva y elimine
 	 * el elemento de la lista reusable de la clase ReusablePool.
 	 * Además, se comprueba que se lance la excepción correctamente si se intenta
-	 * eliminar elementos si la lista está vacía 
+	 * eliminar elementos si la lista está vacía
 	 */
 	@Test
 	public void testAcquireReusable() {
