@@ -50,19 +50,40 @@ public class ReusablePoolTest {
 
 	/**
 	 * Test method for {@link ubu.gii.dass.c01.ReusablePool#acquireReusable()}.
-	 * otras 2 cosa
+	 * En este test se comprueba que el método acquireReusable() devuelva y elimine
+	 * el elemento de la lista reusable de la clase ReusablePool.
+	 * Además, se comprueba que se lance la excepción correctamente si se intenta
+	 * eliminar elementos si la lista está vacía
 	 */
 	@Test
 	public void testAcquireReusable() {
-		
+		ReusablePool pool = ReusablePool.getInstance();
+		//Creamos una variable de tipo NotFreeInstanceException
+		NotFreeInstanceException excepcion = null;
+		assertNotNull(pool);
+		try {
+			//Obtenemos dos objetos de la clase Reusable con el método acquireReusable()
+			Reusable r = pool.acquireReusable();
+			Reusable r2 = pool.acquireReusable();
+			//Probamos que el método acquireReusable no devuelva el mismo objeto reusable
+			assertNotEquals(r, r2);
+			//Llamamos de nuevo al método acquireReusable para comprobar que nos salta la excepción NotFreeInstanceException
+			Reusable r3 = pool.acquireReusable();
+		} catch (NotFreeInstanceException e) {
+			//Almacenamos la excepción obtenida
+			excepcion = e;
+		}
+		//Determinamos que la excepción sea la esperada
+		assertEquals(excepcion.getMessage(), "No hay más instancias reutilizables disponibles. Reintentalo más tarde");
 	}
 
 	/**
 	 * Test method for {@link ubu.gii.dass.c01.ReusablePool#releaseReusable(ubu.gii.dass.c01.Reusable)}.
+	 * @throws NotFreeInstanceException 
 	 */
 	@Test
-	public void testReleaseReusable() {
-		
+	public void testReleaseReusable() throws NotFreeInstanceException {
+
 	}
 
 }
