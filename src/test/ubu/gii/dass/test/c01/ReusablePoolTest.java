@@ -7,19 +7,22 @@ import static org.junit.Assert.*;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import ubu.gii.dass.c01.DuplicatedInstanceException;
 import ubu.gii.dass.c01.NotFreeInstanceException;
 import ubu.gii.dass.c01.Reusable;
 import ubu.gii.dass.c01.ReusablePool;
 /**
- * @author alumno
+ * @author Celia Martinez Ortega, Jesus García Ballesteros
  *
  */
 public class ReusablePoolTest {
 
 	private ReusablePool pool;
+	
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -38,6 +41,8 @@ public class ReusablePoolTest {
 
 	/**
 	 * Test method for {@link ubu.gii.dass.c01.ReusablePool#getInstance()}.
+	 * En este test se comprueba que el metodo getInstance() devuelve siempre 
+	 * el objeto unico ReusablePool que hace de singleton.
 	 */
 	@Test
 	public void testGetInstance() {
@@ -53,37 +58,46 @@ public class ReusablePoolTest {
 	 * En este test se comprueba que el método acquireReusable() devuelva y elimine
 	 * el elemento de la lista reusable de la clase ReusablePool.
 	 * Además, se comprueba que se lance la excepción correctamente si se intenta
-	 * eliminar elementos si la lista está vacía
+	 * eliminar elementos si la lista está vacía.
+	 * @throws NotFreeInstanceException 
 	 */
-	@Test
-	public void testAcquireReusable() {
+	@Test(expected=NotFreeInstanceException.class)
+	public void testAcquireReusable() throws NotFreeInstanceException {
 		ReusablePool pool = ReusablePool.getInstance();
-		//Creamos una variable de tipo NotFreeInstanceException
-		NotFreeInstanceException excepcion = null;
 		assertNotNull(pool);
-		try {
-			//Obtenemos dos objetos de la clase Reusable con el método acquireReusable()
-			Reusable r = pool.acquireReusable();
-			Reusable r2 = pool.acquireReusable();
-			//Probamos que el método acquireReusable no devuelva el mismo objeto reusable
-			assertNotEquals(r, r2);
-			//Llamamos de nuevo al método acquireReusable para comprobar que nos salta la excepción NotFreeInstanceException
-			Reusable r3 = pool.acquireReusable();
-		} catch (NotFreeInstanceException e) {
-			//Almacenamos la excepción obtenida
-			excepcion = e;
-		}
-		//Determinamos que la excepción sea la esperada
-		assertEquals(excepcion.getMessage(), "No hay más instancias reutilizables disponibles. Reintentalo más tarde");
+		
+		//Obtenemos dos objetos de la clase Reusable con el método acquireReusable()
+		Reusable r = pool.acquireReusable();
+		Reusable r2 = pool.acquireReusable();
+		//Probamos que el método acquireReusable no devuelva el mismo objeto reusable
+		assertNotEquals(r, r2);
+		//Llamamos de nuevo al método acquireReusable para comprobar que nos salta la excepción NotFreeInstanceException
+		pool.acquireReusable();		
 	}
 
 	/**
 	 * Test method for {@link ubu.gii.dass.c01.ReusablePool#releaseReusable(ubu.gii.dass.c01.Reusable)}.
+	 * En este test se comprueba que el método releaseReusable(Reusable) añada de
+	 * forma correcta a la lista reusable de la clase ReusablePool un elemento
+	 * Reusable. También se comprueba que se lance la expcepción cuando se intenta
+	 * añadir un elemento ya existente en dicha lista.
 	 * @throws NotFreeInstanceException 
+	 * @throws DuplicatedInstanceException 
 	 */
-	@Test
-	public void testReleaseReusable() throws NotFreeInstanceException {
-
+	@Test(expected=DuplicatedInstanceException.class)
+	public void testReleaseReusable() throws NotFreeInstanceException, DuplicatedInstanceException {	
+		ReusablePool pool = ReusablePool.getInstance();
+		assertNotNull(pool);
+		//Almacenamos con el método acquireReusable() para obtener un objeto de la clase Reusable
+		Reusable r = pool.acquireReusable();
+		
+		//Llamamos al método releaseReusable(Reusable)
+		pool.releaseReusable(r);
+		//Comprobamos que el elemento se haya almacenado correctamente
+		assertEquals(pool.acquireReusable(), r);
+		//Llamamos dos veces al método releaseReusable() con la misma variable
+		pool.releaseReusable(r);
+		pool.releaseReusable(r);
 	}
 
 }
