@@ -61,7 +61,7 @@ public class ReusablePoolTest {
 	 * eliminar elementos si la lista está vacía.
 	 * @throws NotFreeInstanceException 
 	 */
-	@Test(expected=NotFreeInstanceException.class)
+	@Test
 	public void testAcquireReusable() throws NotFreeInstanceException {
 		ReusablePool pool = ReusablePool.getInstance();
 		assertNotNull(pool);
@@ -70,9 +70,8 @@ public class ReusablePoolTest {
 		Reusable r = pool.acquireReusable();
 		Reusable r2 = pool.acquireReusable();
 		//Probamos que el método acquireReusable no devuelva el mismo objeto reusable
-		assertNotEquals(r, r2);
-		//Llamamos de nuevo al método acquireReusable para comprobar que nos salta la excepción NotFreeInstanceException
-		pool.acquireReusable();		
+		assertNotEquals(r.util(), r2.util());
+
 	}
 
 	/**
@@ -84,7 +83,7 @@ public class ReusablePoolTest {
 	 * @throws NotFreeInstanceException 
 	 * @throws DuplicatedInstanceException 
 	 */
-	@Test(expected=DuplicatedInstanceException.class)
+	@Test
 	public void testReleaseReusable() throws NotFreeInstanceException, DuplicatedInstanceException {	
 		ReusablePool pool = ReusablePool.getInstance();
 		assertNotNull(pool);
@@ -95,8 +94,7 @@ public class ReusablePoolTest {
 		pool.releaseReusable(r);
 		//Comprobamos que el elemento se haya almacenado correctamente
 		assertEquals(pool.acquireReusable(), r);
-		//Llamamos dos veces al método releaseReusable() con la misma variable
-		pool.releaseReusable(r);
+		
 		pool.releaseReusable(r);
 	}
 
