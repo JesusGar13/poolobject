@@ -1,3 +1,7 @@
-              - name: Code Climate Coverage Action Test
-                uses: MartinNuc/codeclimate-action@v2.5.10
-            
+language: java
+before_script:
+  - sudo apt-get install ant-optional
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+jdk:
+  - openjdk8
