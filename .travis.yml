@@ -5,11 +5,11 @@
           global:
             - CC_TEST_REPORTER_ID=8df4d4da346829cb7ed421c5210a3dcd373162c3003dc38ecdf2d5339e671895
         before_script:
-          - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./.github/workflows/cc-test-reporter.yml
-          - chmod +x ./.github/workflows/cc-test-reporter.yml
-          - ./.github/workflows/cc-test-reporter.yml before-build
+          - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter.yml
+          - chmod +x ./cc-test-reporter.yml
+          - ./cc-test-reporter.yml before-build
         script:
           - mvn test
         after_script:
-          - ./.github/workflows/cc-test-reporter.yml format-coverage -d -t jacoco ./target/jacoco-ut/jacoco.xml
-          - ./.github/workflows/cc-test-reporter.yml upload-coverage -d
+          - ./cc-test-reporter.yml format-coverage -d -t jacoco ./target/jacoco-ut/jacoco.xml
+          - ./cc-test-reporter.yml upload-coverage -d
