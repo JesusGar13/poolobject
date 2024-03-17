@@ -1,4 +1,4 @@
-name: Codacy Coverage Reporter
+name: Codacy and Jacoco Coverage Reporter
 
 on:
   push:
@@ -6,9 +6,9 @@ on:
       - main
 
 jobs:
-  codacy-coverage-reporter:
+  codacy-and-jacoco-coverage-reporter:
     runs-on: ubuntu-latest
-    name: Codacy Coverage Reporter
+    name: Codacy and Jacoco Coverage Reporter
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -23,6 +23,9 @@ jobs:
 
       - name: Test with Ant
         run: ant -buildfile build.xml test
+
+      - name: Generate Jacoco coverage report
+        run: ant -buildfile build.xml jacoco-report
 
       - name: Run Codacy Coverage Reporter
         uses: codacy/codacy-coverage-reporter-action@v1
