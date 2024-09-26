@@ -1,7 +1,16 @@
 language: java
-before_script:
-  - sudo apt-get install ant-optional
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
 jdk:
-  - openjdk8
+  - openjdk11
+
+# Instalar dependencias
+install:
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+
+# Ejecutar las pruebas y generar el informe de cobertura
+script:
+  - mvn test jacoco:report
+
+# Después de ejecutar las pruebas, enviar los resultados de cobertura a Code Climate
+after_success:
+  - pip install codeclimate-test-reporter
+  - codeclimate-test-reporter --file target/site/jacoco/jacoco.xml --language java
